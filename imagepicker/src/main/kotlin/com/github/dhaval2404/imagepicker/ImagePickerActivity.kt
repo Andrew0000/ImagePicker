@@ -13,6 +13,7 @@ import com.github.dhaval2404.imagepicker.provider.CompressionProvider
 import com.github.dhaval2404.imagepicker.provider.CropProvider
 import com.github.dhaval2404.imagepicker.provider.GalleryProvider
 import com.github.dhaval2404.imagepicker.util.FileUriUtils
+import com.github.dhaval2404.imagepicker.util.FileUtil
 
 /**
  * Pick Image
@@ -41,6 +42,7 @@ class ImagePickerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FileUtil.init(applicationContext)
         loadBundle(savedInstanceState)
     }
 

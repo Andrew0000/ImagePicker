@@ -1,11 +1,13 @@
 package com.github.dhaval2404.imagepicker.util
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.StatFs
+import android.webkit.MimeTypeMap
 import androidx.documentfile.provider.DocumentFile
 import java.io.File
 import java.io.FileInputStream
@@ -23,6 +25,13 @@ import java.util.Locale
  * @since 04 January 2019
  */
 object FileUtil {
+
+    var appContext: Context? = null
+        private set
+
+    fun init(appContext: Context) {
+        this.appContext = appContext
+    }
 
     /**
      * Get Image File
@@ -203,11 +212,20 @@ object FileUtil {
      */
     fun getImageExtension(uriImage: Uri): String {
         var extension: String? = null
+        val contentResolver = appContext?.contentResolver
 
         try {
-            val imagePath = uriImage.path
-            if (imagePath != null && imagePath.lastIndexOf(".") != -1) {
-                extension = imagePath.substring(imagePath.lastIndexOf(".") + 1)
+            when {
+                contentResolver != null && uriImage.scheme == ContentResolver.SCHEME_CONTENT -> {
+                    val mime = contentResolver.getType(uriImage)
+                    extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)
+                }
+                else -> {
+                    val imagePath = uriImage.path
+                    if (imagePath != null && imagePath.lastIndexOf(".") != -1) {
+                        extension = imagePath.substring(imagePath.lastIndexOf(".") + 1)
+                    }
+                }
             }
         } catch (e: Exception) {
             extension = null
